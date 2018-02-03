@@ -15,7 +15,11 @@ let mainWindow
 function createWindow () {
   // Create the browser window.
   // mainWindow = new BrowserWindow({width: 1200, height: 1000, titleBarStyle: 'hidden'})
-  mainWindow = new BrowserWindow({width: 1200, height: 1000})
+  mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 1000,
+    icon: path.join(__dirname, 'icon/icon.icns')
+ })
 
   mainWindow.setFullScreen(true)
 
