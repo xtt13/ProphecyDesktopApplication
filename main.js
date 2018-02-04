@@ -1,7 +1,7 @@
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
-const menu = electron.Menu
+const Menu = electron.Menu
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
@@ -23,6 +23,10 @@ function createWindow () {
   })
 
   mainWindow.setFullScreen(true)
+  // mainWindow.maximize();
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -43,12 +47,10 @@ function createWindow () {
   })
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+
 app.on('ready', createWindow)
 
-// Quit when all windows are closed.
+
 app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
@@ -65,92 +67,242 @@ app.on('activate', function () {
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+// app.on('browser-window-created', function () {
+//   let reopenMenuItem = findReopenMenuItem()
+//   if (reopenMenuItem) reopenMenuItem.enabled = false
+// })
 
-const template = [
-  {
-    label: 'Edit',
-    submenu: [
-      {role: 'undo'},
-      {role: 'redo'},
-      {type: 'separator'},
-      {role: 'cut'},
-      {role: 'copy'},
-      {role: 'paste'},
-      {role: 'pasteandmatchstyle'},
-      {role: 'delete'},
-      {role: 'selectall'}
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      {role: 'reload'},
-      {role: 'forcereload'},
-      {role: 'toggledevtools'},
-      {type: 'separator'},
-      {role: 'resetzoom'},
-      {role: 'zoomin'},
-      {role: 'zoomout'},
-      {type: 'separator'},
-      {role: 'togglefullscreen'}
-    ]
-  },
-  {
-    role: 'window',
-    submenu: [
-      {role: 'minimize'},
-      {role: 'close'}
-    ]
-  },
-  {
-    role: 'help',
-    submenu: [
-      {
-        label: 'Game Documentation',
-        click () { require('electron').shell.openExternal('https://michaeldorn.at') }
+// app.on('window-all-closed', function () {
+//   let reopenMenuItem = findReopenMenuItem()
+//   if (reopenMenuItem) reopenMenuItem.enabled = true
+// })
+
+
+
+
+let template = [{
+  label: 'Edit',
+  submenu: [{
+    label: 'Undo',
+    accelerator: 'CmdOrCtrl+Z',
+    role: 'undo'
+  }, {
+    label: 'Redo',
+    accelerator: 'Shift+CmdOrCtrl+Z',
+    role: 'redo'
+  }, {
+    type: 'separator'
+  }, {
+    label: 'Cut',
+    accelerator: 'CmdOrCtrl+X',
+    role: 'cut'
+  }, {
+    label: 'Copy',
+    accelerator: 'CmdOrCtrl+C',
+    role: 'copy'
+  }, {
+    label: 'Paste',
+    accelerator: 'CmdOrCtrl+V',
+    role: 'paste'
+  }, {
+    label: 'Select All',
+    accelerator: 'CmdOrCtrl+A',
+    role: 'selectall'
+  }]
+}, {
+  label: 'View',
+  submenu: [{
+    label: 'Reload',
+    accelerator: 'CmdOrCtrl+R',
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        // on reload, start fresh and close any old
+        // open secondary windows
+        if (focusedWindow.id === 1) {
+          BrowserWindow.getAllWindows().forEach(function (win) {
+            if (win.id > 1) {
+              win.close()
+            }
+          })
+        }
+        focusedWindow.reload()
       }
-    ]
-  }
-]
-
-if (process.platform === 'darwin') {
-  template.unshift({
-    label: app.getName(),
-    submenu: [
-      {role: 'about'},
-      {type: 'separator'},
-      {role: 'services', submenu: []},
-      {type: 'separator'},
-      {role: 'hide'},
-      {role: 'hideothers'},
-      {role: 'unhide'},
-      {type: 'separator'},
-      {role: 'quit'}
-    ]
-  })
-
-  // Edit Menu
-  template[1].submenu.push(
-    {type: 'separator'},
-    {
-      label: 'Speech',
-      submenu: [
-        {role: 'startspeaking'},
-        {role: 'stopspeaking'}
-      ]
     }
-  )
+  }, {
+    label: 'Toggle Full Screen',
+    accelerator: (function () {
+      if (process.platform === 'darwin') {
+        return 'Ctrl+Command+F'
+      } else {
+        return 'F11'
+      }
+    })(),
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
+      }
+    }
+  }, {
+    label: 'Toggle Developer Tools',
+    accelerator: (function () {
+      if (process.platform === 'darwin') {
+        return 'Alt+Command+I'
+      } else {
+        return 'Ctrl+Shift+I'
+      }
+    })(),
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        focusedWindow.toggleDevTools()
+      }
+    }
+  }, {
+    type: 'separator'
+  }, {
+    label: 'App Menu Demo',
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        const options = {
+          type: 'info',
+          title: 'Application Menu Demo',
+          buttons: ['Ok'],
+          message: 'This demo is for the Menu section, showing how to create a clickable menu item in the application menu.'
+        }
+        electron.dialog.showMessageBox(focusedWindow, options, function () {})
+      }
+    }
+  }]
+}, {
+  label: 'Window',
+  role: 'window',
+  submenu: [{
+    label: 'Minimize',
+    accelerator: 'CmdOrCtrl+M',
+    role: 'minimize'
+  }, {
+    label: 'Close',
+    accelerator: 'CmdOrCtrl+W',
+    role: 'close'
+  }, {
+    type: 'separator'
+  }, {
+    label: 'Reopen Window',
+    accelerator: 'CmdOrCtrl+Shift+T',
+    enabled: false,
+    key: 'reopenMenuItem',
+    click: function () {
+      app.emit('activate')
+    }
+  }]
+}, {
+  label: 'Help',
+  role: 'help',
+  submenu: [{
+    label: 'Learn More',
+    click: function () {
+      electron.shell.openExternal('http://electron.atom.io')
+    }
+  }]
+}]
 
-  // Window Menu
-  template[3].submenu = [
-    {role: 'close'},
-    {role: 'minimize'},
-    {type: 'separator'},
-    {role: 'front'}
-  ]
+function addUpdateMenuItems (items, position) {
+  if (process.mas) return
+
+  const version = electron.app.getVersion()
+  let updateItems = [{
+    label: `Version ${version}`,
+    enabled: false
+  }, {
+    label: 'Checking for Update',
+    enabled: false,
+    key: 'checkingForUpdate'
+  }, {
+    label: 'Check for Update',
+    visible: false,
+    key: 'checkForUpdate',
+    click: function () {
+      require('electron').autoUpdater.checkForUpdates()
+    }
+  }, {
+    label: 'Restart and Install Update',
+    enabled: true,
+    visible: false,
+    key: 'restartToUpdate',
+    click: function () {
+      require('electron').autoUpdater.quitAndInstall()
+    }
+  }]
+
+  items.splice.apply(items, [position, 0].concat(updateItems))
 }
 
-menu.buildFromTemplate(template)
-// menu.setApplicationMenu(menu)
+function findReopenMenuItem () {
+  const menu = Menu.getApplicationMenu()
+  if (!menu) return
+
+  let reopenMenuItem
+  menu.items.forEach(function (item) {
+    if (item.submenu) {
+      item.submenu.items.forEach(function (item) {
+        if (item.key === 'reopenMenuItem') {
+          reopenMenuItem = item
+        }
+      })
+    }
+  })
+  return reopenMenuItem
+}
+
+if (process.platform === 'darwin') {
+  const name = electron.app.getName()
+  template.unshift({
+    label: name,
+    submenu: [{
+      label: `About ${name}`,
+      role: 'about'
+    }, {
+      type: 'separator'
+    }, {
+      label: 'Services',
+      role: 'services',
+      submenu: []
+    }, {
+      type: 'separator'
+    }, {
+      label: `Hide ${name}`,
+      accelerator: 'Command+H',
+      role: 'hide'
+    }, {
+      label: 'Hide Others',
+      accelerator: 'Command+Alt+H',
+      role: 'hideothers'
+    }, {
+      label: 'Show All',
+      role: 'unhide'
+    }, {
+      type: 'separator'
+    }, {
+      label: 'Quit',
+      accelerator: 'Command+Q',
+      click: function () {
+        app.quit()
+      }
+    }]
+  })
+
+  // Window menu.
+  template[3].submenu.push({
+    type: 'separator'
+  }, {
+    label: 'Bring All to Front',
+    role: 'front'
+  })
+
+  addUpdateMenuItems(template[0].submenu, 1)
+}
+
+if (process.platform === 'win32') {
+  const helpMenu = template[template.length - 1].submenu
+  addUpdateMenuItems(helpMenu, 0)
+}
+
