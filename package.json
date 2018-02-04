@@ -1,6 +1,6 @@
 {
   "name": "Prophecy",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A Pixelart Game",
   "main": "main.js",
   "scripts": {
@@ -13,9 +13,10 @@
     "Pixelart",
     "Game",
     "Phaser",
-    "RPG"
+    "RPG",
+    "Desktop Application"
   ],
-  "author": "GitHub",
+  "author": "Michael Dorn",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "~1.7.8",

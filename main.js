@@ -8,6 +8,8 @@ const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
 
+const ipc = require('electron').ipcMain
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -16,8 +18,8 @@ function createWindow () {
   // Create the browser window.
   // mainWindow = new BrowserWindow({width: 1200, height: 1000, titleBarStyle: 'hidden'})
   mainWindow = new BrowserWindow({
-    width: 1200, 
-    height: 1000,
+    width: 1000, 
+    height: 600,
     backgroundColor: '#000000',
     titleBarStyle: 'hidden'
   })
@@ -75,6 +77,11 @@ app.on('activate', function () {
 // app.on('window-all-closed', function () {
 //   let reopenMenuItem = findReopenMenuItem()
 //   if (reopenMenuItem) reopenMenuItem.enabled = true
+// })
+
+// ipc.on('asynchronous-message', function (event, arg) {
+//   // event.sender.send('asynchronous-reply', 'pong')
+//   console.log('GOT IT')
 // })
 
 
@@ -198,9 +205,9 @@ let template = [{
   label: 'Help',
   role: 'help',
   submenu: [{
-    label: 'Learn More',
+    label: 'Prophecy FAQ',
     click: function () {
-      electron.shell.openExternal('http://electron.atom.io')
+      electron.shell.openExternal('http://michaeldorn.at')
     }
   }]
 }]
@@ -218,7 +225,7 @@ function addUpdateMenuItems (items, position) {
     key: 'checkingForUpdate'
   }, {
     label: 'Check for Update',
-    visible: false,
+    visible: true,
     key: 'checkForUpdate',
     click: function () {
       require('electron').autoUpdater.checkForUpdates()

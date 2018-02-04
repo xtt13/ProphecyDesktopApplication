@@ -9,10 +9,14 @@
   <meta name=format-detection content="telephone=no">
   <style>body,html{-webkit-app-region: drag, margin:0;padding:0;background-color:#000}canvas{image-rendering:optimizeSpeed;image-rendering:-moz-crisp-edges;image-rendering:-webkit-optimize-contrast;image-rendering:-moz-crisp-edges;image-rendering:-o-crisp-edges;image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor}</style>
 </head>
-<body>
+<body style="-webkit-app-region: drag">
   <div id=content></div>
   
   <script>
       // You can also require other files to run in this process
       require('./renderer.js')
-  </script></body></html>
+  </script>
+<script>
+  console.log('COOL');
+  console.log(ipc);
+</script></body></html>
