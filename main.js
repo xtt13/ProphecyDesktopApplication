@@ -16,10 +16,11 @@ function createWindow () {
   // Create the browser window.
   // mainWindow = new BrowserWindow({width: 1200, height: 1000, titleBarStyle: 'hidden'})
   mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1200, 
     height: 1000,
-    icon: path.join(__dirname, 'icon/icon.icns')
- })
+    backgroundColor: '#000000',
+    titleBarStyle: 'hidden'
+  })
 
   mainWindow.setFullScreen(true)
 
