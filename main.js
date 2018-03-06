@@ -10,6 +10,24 @@ const url = require('url')
 
 const ipc = require('electron').ipcMain
 
+// let autoUpdater = require('electron').autoUpdater
+// const appVersion = require('./package.json').version;
+// const os = require('os').platform();
+
+
+
+// var updateFeed = 'https://prophecyupdateserver.herokuapp.com/updates/latest';
+
+// if (process.env.NODE_ENV !== 'development') {
+//   updateFeed = os === 'darwin' ?
+//     'https://prophecyupdateserver.herokuapp.com/updates/latest' :
+//     'http://download.mysite.com/releases/win32';
+// }
+
+// console.log(autoUpdater.setFeedURL);
+// autoUpdater.setFeedURL('https://prophecyupdateserver.herokuapp.com/updates/latest?v=' + appVersion);
+// autoUpdater.setFeedURL('http://localhost:5000/updates/latest?v=' + appVersion);
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -23,6 +41,9 @@ function createWindow () {
     backgroundColor: '#000000',
     titleBarStyle: 'hidden'
   })
+
+  global.contents = mainWindow.webContents
+  
 
   mainWindow.setFullScreen(true)
   // mainWindow.maximize();
@@ -180,6 +201,19 @@ let template = [{
     }
   }]
 }, {
+  label: 'Audio',
+  role: 'Audio',
+  submenu: [{
+    label: 'Mute Audio',
+    accelerator: 'CmdOrCtrl+Shift+M',
+    enabled: true,
+    key: 'muteAudio',
+    click: () => {
+      (mainWindow.webContents.isAudioMuted()) ? mainWindow.webContents.setAudioMuted(false) : mainWindow.webContents.setAudioMuted(true)
+    }
+  }]
+}
+, {
   label: 'Window',
   role: 'window',
   submenu: [{
@@ -201,7 +235,100 @@ let template = [{
       app.emit('activate')
     }
   }]
-}, {
+}, 
+{
+  label: 'About Us',
+  submenu: [{
+    label: 'Audio',
+    submenu: [{
+      label: 'Roland Köstler',
+      click: function () {
+       electron.shell.openExternal('https://www.instagram.com/roland_koestler/')
+      }
+    }
+    ]
+  },
+  {
+    type: 'separator'
+  },
+  {
+    label: 'Development',
+    submenu: [{
+      label: 'Michael Dorn',
+      click: function () {
+       electron.shell.openExternal('http://michaeldorn.at')
+      }
+    }
+    ]
+  },
+  {
+    type: 'separator'
+  },
+  {
+    label: 'Game Art',
+    submenu: [{
+      label: 'Isabella Griessenberger',
+      click: function () {
+       electron.shell.openExternal('http://michaeldorn.at')
+      }
+    },
+    {
+      label: 'Kang Wang',
+      click: function () {
+       electron.shell.openExternal('https://www.artstation.com/desaturateful')
+      }
+    },
+    {
+      label: 'Lia Lembacher',
+      click: function () {
+       electron.shell.openExternal('http://michaeldorn.at')
+      }
+    },
+    {
+      label: 'Nina Leinwatter',
+      click: function () {
+       electron.shell.openExternal('http://michaeldorn.at')
+      }
+    },
+    {
+      label: 'Sabine Rimmer',
+      click: function () {
+       electron.shell.openExternal('http://michaeldorn.at')
+      }
+    }
+    ]
+  },
+  {
+    type: 'separator'
+  },
+  {
+    label: 'Project Management',
+    submenu: [{
+      label: 'Manuela Abdalla',
+      click: function () {
+       electron.shell.openExternal('https://www.instagram.com/livevie_/')
+      }
+    }
+    ]
+  },
+  {
+    type: 'separator'
+  },
+   {
+    label: 'Video',
+    submenu: [{
+      label: 'Jan Rogner',
+      click: function () {
+       electron.shell.openExternal('http://michaeldorn.at')
+      }
+    }
+    ]
+  }
+
+  ]
+
+},
+{
   label: 'Help',
   role: 'help',
   submenu: [{
@@ -210,7 +337,9 @@ let template = [{
       electron.shell.openExternal('http://michaeldorn.at')
     }
   }]
-}]
+}
+
+]
 
 function addUpdateMenuItems (items, position) {
   if (process.mas) return
@@ -298,7 +427,7 @@ if (process.platform === 'darwin') {
   })
 
   // Window menu.
-  template[3].submenu.push({
+  template[2].submenu.push({
     type: 'separator'
   }, {
     label: 'Bring All to Front',
