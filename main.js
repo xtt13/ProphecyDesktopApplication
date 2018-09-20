@@ -38,6 +38,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1000, 
     height: 600,
+    // title: "Prophecy of the Fallen",
     backgroundColor: '#000000',
     titleBarStyle: 'hidden'
   })
@@ -332,7 +333,7 @@ let template = [{
   label: 'Help',
   role: 'help',
   submenu: [{
-    label: 'Prophecy FAQ',
+    label: 'FAQ',
     click: function () {
       electron.shell.openExternal('http://michaeldorn.at')
     }
